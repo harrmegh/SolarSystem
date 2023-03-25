@@ -5,6 +5,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight); // could use false as third param to give half resolution
 renderer.shadowMap.enabled = true;
+renderer.setClearColor(0x000010);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
