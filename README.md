@@ -1,4 +1,4 @@
-# Solar System
+# Paper Solar System
 
 ## Overview
 

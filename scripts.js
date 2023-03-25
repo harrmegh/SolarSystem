@@ -36,7 +36,11 @@ const mercury = createPlanet(sunSize * 0.003504, 0xff4fe0, 206);
 // Make Venus
 const venus = createPlanet(sunSize * 0.008691, 0x5f32ff, 212);
 // Make Earth
-const earth = createPlanet(sunSize * 0.009149, 0x0000ff, 216);
+const earth = createPlanet(sunSize * 0.009149, 0x0000ff, 218, undefined, {
+  size: 0.25 * (sunSize * 0.009149),
+  texture: 0xffff00,
+  position: (sunSize * 0.009149) / 2 + 2,
+});
 // Make Mars
 const mars = createPlanet(sunSize * 0.004868, 0xff0000, 225);
 // Make Jupiter
@@ -70,18 +74,6 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
 scene.add(directionalLight);
 directionalLight.position.set(-30, 50, 0);
 
-// change background color
-// renderer.setClearColor(0xffea00);
-// set texture as background
-// const textureLoader = new THREE.TextureLoader();
-// scene.background = textureLoader.load(stars); // only the background
-// scene.background = cubeTextureLoader.load([stars, stars, stars, stars, stars, stars]);
-
-// window.addEventListener("mousemove", function (e) {
-//   mousePosition.x = (e.clientX / this.window.innerWidth) * 2 - 1;
-//   mousePosition.y = (e.clientY / this.window.innerHeight) * 2 + 1;
-// });
-
 function animate() {
   requestAnimationFrame(animate);
 
@@ -112,7 +104,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-function createPlanet(size, texture, position, ring) {
+function createPlanet(size, texture, position, ring, moon) {
   const geo = new THREE.SphereGeometry(size, 40, 40);
   const material = new THREE.MeshStandardMaterial({
     color: texture,
@@ -121,7 +113,7 @@ function createPlanet(size, texture, position, ring) {
   const planet = new THREE.Mesh(geo, material);
   const planetParent = new THREE.Object3D();
   planetParent.add(planet);
-  if (ring) {
+  if (ring !== undefined) {
     const ringGeometry = new THREE.RingGeometry(
       ring.innerRadius,
       ring.outerRadius,
@@ -137,6 +129,18 @@ function createPlanet(size, texture, position, ring) {
     planetRing.rotation.x = -0.5 * Math.PI;
     planetRing.castShadow = true;
   }
+  if (moon !== undefined) {
+    const moonGeometry = new THREE.SphereGeometry(moon.size, 40, 40);
+    const moonMaterial = new THREE.MeshStandardMaterial({
+      color: moon.texture,
+      wireframe: true,
+    });
+    const newMoon = new THREE.Mesh(moonGeometry, moonMaterial);
+    planet.add(newMoon);
+    newMoon.position.x = moon.position;
+    newMoon.rotation.x = 8 * Math.PI;
+  }
+
   scene.add(planetParent);
   planet.position.x = position;
   return { planet, planetParent };
