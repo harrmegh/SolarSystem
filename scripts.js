@@ -9,17 +9,18 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
-  45, // Field of view value in degrees
+  90, // Field of view value in degrees
   window.innerWidth / window.innerHeight, // aspect ratio
   0.1, // near clipping plane
-  1000 // far clipping plane
+  3000 // far clipping plane
 );
 
 const controls = new OrbitControls(camera, renderer.domElement);
-camera.position.set(-10, 30, 30);
+camera.position.set(1000, 30, 30);
 controls.update();
 
-const sunGeometry = new THREE.SphereGeometry(16, 40, 40);
+const sunSize = 200;
+const sunGeometry = new THREE.SphereGeometry(sunSize, 40, 40);
 const sunMaterial = new THREE.MeshStandardMaterial({
   color: 0xffffe0,
   wireframe: true,
@@ -31,31 +32,31 @@ sun.castShadow = true;
 // const sunId = sun.id;
 
 // Make Mercury
-const mercury = createPlanet(3.2, 0xff4fe0, 28);
+const mercury = createPlanet(sunSize * 0.003504, 0xff4fe0, 206);
 // Make Venus
-const venus = createPlanet(5.8, 0x5f32ff, 44);
+const venus = createPlanet(sunSize * 0.008691, 0x5f32ff, 212);
 // Make Earth
-const earth = createPlanet(6, 0x0000ff, 62);
+const earth = createPlanet(sunSize * 0.009149, 0x0000ff, 216);
 // Make Mars
-const mars = createPlanet(4, 0xff0000, 78);
+const mars = createPlanet(sunSize * 0.004868, 0xff0000, 225);
 // Make Jupiter
-const jupiter = createPlanet(12, 0x00ffff, 100);
+const jupiter = createPlanet(sunSize * 0.100398, 0x00ffff, 287);
 // Make Saturn and rings
-const saturn = createPlanet(10, 0x004f89, 138, {
-  innerRadius: 10,
-  outerRadius: 20,
+const saturn = createPlanet(sunSize * 0.083626, 0x004f89, 360, {
+  innerRadius: sunSize * 0.083626,
+  outerRadius: sunSize * 0.083626 + 15,
   texture: 0x004f89,
 });
 // Make Uranus
-const uranus = createPlanet(7, 0x004f89, 176, {
-  innerRadius: 7,
-  outerRadius: 12,
+const uranus = createPlanet(sunSize * 0.036422, 0x004f89, 520, {
+  innerRadius: sunSize * 0.036422,
+  outerRadius: sunSize * 0.036422 + 5,
   texture: 0x0f4f89,
 });
 // Make Neptune
-const neptune = createPlanet(7, 0x000fff, 200);
+const neptune = createPlanet(sunSize * 0.035359, 0x000fff, 700);
 // Make Pluto
-const pluto = createPlanet(2.8, 0xffffff, 216);
+const pluto = createPlanet(sunSize * 0.0016185, 0xffffff, 800);
 
 // add lighting
 const ambientLight = new THREE.AmbientLight(0x333333);
