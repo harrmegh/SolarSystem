@@ -23,13 +23,20 @@ const sunSize = 200;
 const sunGeometry = new THREE.SphereGeometry(sunSize, 40, 40);
 const sunMaterial = new THREE.MeshStandardMaterial({
   color: 0xffffe0,
+  roughness: 0.4,
+  metalness: 0.5,
+  emissive: 0xffffe0,
+  emissiveIntensity: 1,
   wireframe: true,
+  transparent: true,
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 scene.add(sun);
 sun.position.set(0, 0, 0);
 sun.castShadow = true;
 // const sunId = sun.id;
+const sunLight = new THREE.PointLight(0xffffff, 9, 3000);
+sun.add(sunLight);
 
 // Make Mercury
 const mercury = createPlanet(sunSize * 0.003504, 0xff4fe0, 206);
@@ -67,12 +74,12 @@ const ambientLight = new THREE.AmbientLight(0x333333);
 scene.add(ambientLight);
 
 // point light
-const pointLight = new THREE.PointLight(0xffffff, 2, 300);
-scene.add(pointLight);
+// const pointLight = new THREE.PointLight(0xffffff, 2, 300);
+// scene.add(pointLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-scene.add(directionalLight);
-directionalLight.position.set(-30, 50, 0);
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+// scene.add(directionalLight);
+// directionalLight.position.set(10, 0, 0);
 
 function animate() {
   requestAnimationFrame(animate);
@@ -143,6 +150,7 @@ function createPlanet(size, texture, position, ring, moon) {
 
   scene.add(planetParent);
   planet.position.x = position;
+  planet.receiveLight = true;
   return { planet, planetParent };
 }
 
