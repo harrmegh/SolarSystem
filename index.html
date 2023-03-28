@@ -5,30 +5,33 @@
     <title>Solar System</title>
     <link rel="stylesheet" href="./style.css" />
     <script src="./helper.js"></script>
-    <!-- <style>
-      body {
-        margin: 0;
-      }
-    </style> -->
   </head>
 
-  <body >
-  <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
-    >&times;</a
-    >
-    <a href="#">Sun</a>
-    <a href="#">Mercury</a>
-    <a href="#">Venus</a>
-    <a href="#">Earth</a>
-  </div>
-  
-  <!-- Use any element to open the sidenav -->
-  <span onclick="openNav()">open</span>
+  <body>
+    <span onclick="openNav()">Open</span>
+    <div id="mySidenav" class="sidenav">
+      <a
+        href="javascript:void(0)"
+        id="exit"
+        class="closebtn"
+        onclick="closeNav()"
+        >&times;</a
+      >
+      <a id="sun">Sun</a>
+      <a id="mercury">Mercury</a>
+      <a id="venus">Venus</a>
+      <a id="earth">Earth</a>
+      <a id="mars">Mars</a>
+      <a id="jupiter">Jupiter</a>
+      <a id="saturn">Saturn</a>
+      <a id="uranus">Uranus</a>
+      <a id="neptune">Neptune</a>
+      <a id="pluto">Pluto</a>
+    </div>
     <div>
       <script
-      async
-      src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"
+        async
+        src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"
       ></script>
       <script type="importmap">
         {
@@ -39,6 +42,6 @@
         }
       </script>
       <script type="module" src="./scripts.js"></script>
-    </body>
-  </div>
+    </div>
+  </body>
 </html>

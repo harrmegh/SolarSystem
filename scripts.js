@@ -13,6 +13,7 @@ const raycaster = new THREE.Raycaster();
 
 // Interaction Controls
 const pointer = new THREE.Vector2();
+var target;
 
 // Consider additional cameras for each planet?
 const scene = new THREE.Scene();
@@ -25,7 +26,6 @@ const camera = new THREE.PerspectiveCamera(
 
 const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(1000, 30, 30);
-
 controls.update();
 
 // Make Sun
@@ -100,8 +100,14 @@ scene.add(ambientLight);
 // directionalLight.position.set(10, 0, 0);
 
 // Mouse controls
-document.addEventListener("mousemove", onPointerMove);
+// document.addEventListener("mousemove", onPointerMove);
 window.addEventListener("resize", onWindowResize);
+
+// Clicking the side navbar
+document.body.addEventListener("click", function (event) {
+  if (!validId(event.target.id)) return;
+  target = targetPlanet(event.target.id);
+});
 
 function animate() {
   requestAnimationFrame(animate);
@@ -109,32 +115,42 @@ function animate() {
   sun.rotateY(0.004);
 
   // Rotate planets themselves
-  // mercury.planet.rotateY(0.004);
-  // venus.planet.rotateY(0.002);
-  // earth.planet.rotateY(0.02);
-  // mars.planet.rotateY(0.018);
-  // jupiter.planet.rotateY(0.04);
-  // saturn.planet.rotateY(0.038);
-  // uranus.planet.rotateY(0.03);
-  // neptune.planet.rotateY(0.032);
-  // pluto.planet.rotateY(0.008);
+  mercury.planet.rotateY(0.004);
+  venus.planet.rotateY(0.002);
+  earth.planet.rotateY(0.02);
+  mars.planet.rotateY(0.018);
+  jupiter.planet.rotateY(0.04);
+  saturn.planet.rotateY(0.038);
+  uranus.planet.rotateY(0.03);
+  neptune.planet.rotateY(0.032);
+  pluto.planet.rotateY(0.008);
 
+  // TODO: Function to determine if these should rotate
   // Rotate planets around parent or "Sun"
-  // mercury.planetParent.rotateY(0.04);
-  // venus.planetParent.rotateY(0.015);
-  // earth.planetParent.rotateY(0.01);
-  // mars.planetParent.rotateY(0.008);
-  // jupiter.planetParent.rotateY(0.002);
-  // saturn.planetParent.rotateY(0.0009);
-  // uranus.planetParent.rotateY(0.0004);
-  // neptune.planetParent.rotateY(0.0001);
-  // pluto.planetParent.rotateY(0.00007);
+  if (!target || target === sun) {
+    mercury.planetParent.rotateY(0.04);
+    venus.planetParent.rotateY(0.015);
+    earth.planetParent.rotateY(0.01);
+    mars.planetParent.rotateY(0.008);
+    jupiter.planetParent.rotateY(0.002);
+    saturn.planetParent.rotateY(0.0009);
+    uranus.planetParent.rotateY(0.0004);
+    neptune.planetParent.rotateY(0.0001);
+    pluto.planetParent.rotateY(0.00007);
+  }
 
-  // raycaster.setFromCamera(pointer, camera);
+  raycaster.setFromCamera(pointer, camera);
 
   // const intersects = raycaster.intersectObjects(scene.children, false);
+  if (target) {
+    target === sun
+      ? (controls.target = sun.position.clone())
+      : (controls.target = target.planet.position.clone());
+  }
 
-  controls.target = earth.planet.position.clone();
+  // controls.target =
+  //   earth.planet.position.clone());
+  controls.update();
 
   renderer.render(scene, camera);
 }
@@ -196,9 +212,50 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function onPointerMove(event) {
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// function onPointerMove(event) {
+//   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+//   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// }
+
+function targetPlanet(planet) {
+  switch (planet) {
+    case "sun":
+      return sun;
+    case "mercury":
+      return mercury;
+    case "venus":
+      return venus;
+    case "earth":
+      return earth;
+    case "mars":
+      return mars;
+    case "jupiter":
+      return jupiter;
+    case "saturn":
+      return saturn;
+    case "uranus":
+      return uranus;
+    case "neptune":
+      return neptune;
+    case "pluto":
+      return pluto;
+  }
 }
 
+function validId(id) {
+  if (
+    id !== "sun" &&
+    id !== "mercury" &&
+    id !== "venus" &&
+    id !== "earth" &&
+    id !== "mars" &&
+    id !== "jupiter" &&
+    id !== "saturn" &&
+    id !== "uranus" &&
+    id !== "neptune" &&
+    id !== "pluto"
+  )
+    return false;
+  return true;
+}
 animate();
