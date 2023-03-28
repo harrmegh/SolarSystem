@@ -12,20 +12,20 @@ document.body.appendChild(renderer.domElement);
 const raycaster = new THREE.Raycaster();
 
 // Interaction Controls
-var play = true;
-var intersected;
 const pointer = new THREE.Vector2();
 
+// Consider additional cameras for each planet?
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   90, // Field of view value in degrees
   window.innerWidth / window.innerHeight, // aspect ratio
   0.1, // near clipping plane
-  3000 // far clipping plane
+  300000 // far clipping plane
 );
 
 const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(1000, 30, 30);
+
 controls.update();
 
 // Make Sun
@@ -39,6 +39,7 @@ const sunMaterial = new THREE.MeshStandardMaterial({
   emissiveIntensity: 1,
   wireframe: true,
   transparent: true,
+  side: THREE.DoubleSide,
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 scene.add(sun);
@@ -49,6 +50,10 @@ const sunLight = new THREE.PointLight(0xffffff, 9, 3000);
 sun.add(sunLight);
 
 // Sun Controls
+// var planetControls = [
+//   { planet: sun, target: true },
+//   { planet: earth.planet, target: false },
+// ];
 
 // Make Mercury
 const mercury = createPlanet(sunSize * 0.003504, 0xff4fe0, 206);
@@ -60,6 +65,7 @@ const earth = createPlanet(sunSize * 0.009149, 0x0000ff, 218, undefined, {
   texture: 0xffff00,
   position: (sunSize * 0.009149) / 2 + 2,
 });
+const earthId = earth.planet.id;
 // Make Mars
 const mars = createPlanet(sunSize * 0.004868, 0xff0000, 225);
 // Make Jupiter
@@ -103,46 +109,32 @@ function animate() {
   sun.rotateY(0.004);
 
   // Rotate planets themselves
-  mercury.planet.rotateY(0.004);
-  venus.planet.rotateY(0.002);
-  earth.planet.rotateY(0.02);
-  mars.planet.rotateY(0.018);
-  jupiter.planet.rotateY(0.04);
-  saturn.planet.rotateY(0.038);
-  uranus.planet.rotateY(0.03);
-  neptune.planet.rotateY(0.032);
-  pluto.planet.rotateY(0.008);
+  // mercury.planet.rotateY(0.004);
+  // venus.planet.rotateY(0.002);
+  // earth.planet.rotateY(0.02);
+  // mars.planet.rotateY(0.018);
+  // jupiter.planet.rotateY(0.04);
+  // saturn.planet.rotateY(0.038);
+  // uranus.planet.rotateY(0.03);
+  // neptune.planet.rotateY(0.032);
+  // pluto.planet.rotateY(0.008);
 
   // Rotate planets around parent or "Sun"
-  mercury.planetParent.rotateY(0.04);
-  venus.planetParent.rotateY(0.015);
-  earth.planetParent.rotateY(0.01);
-  mars.planetParent.rotateY(0.008);
-  jupiter.planetParent.rotateY(0.002);
-  saturn.planetParent.rotateY(0.0009);
-  uranus.planetParent.rotateY(0.0004);
-  neptune.planetParent.rotateY(0.0001);
-  pluto.planetParent.rotateY(0.00007);
+  // mercury.planetParent.rotateY(0.04);
+  // venus.planetParent.rotateY(0.015);
+  // earth.planetParent.rotateY(0.01);
+  // mars.planetParent.rotateY(0.008);
+  // jupiter.planetParent.rotateY(0.002);
+  // saturn.planetParent.rotateY(0.0009);
+  // uranus.planetParent.rotateY(0.0004);
+  // neptune.planetParent.rotateY(0.0001);
+  // pluto.planetParent.rotateY(0.00007);
 
-  raycaster.setFromCamera(pointer, camera);
+  // raycaster.setFromCamera(pointer, camera);
 
-  const intersects = raycaster.intersectObjects(scene.children, false);
+  // const intersects = raycaster.intersectObjects(scene.children, false);
 
-  if (intersects.length > 0) {
-    if (intersected != intersects[0].object) {
-      if (intersected)
-        intersected.material.emissive.setHex(intersected.currentHex);
-
-      intersected = intersects[0].object;
-      intersected.currentHex = intersected.material.emissive.getHex();
-      intersected.material.emissive.setHex(0xff0000);
-    }
-  } else {
-    if (intersected)
-      intersected.material.emissive.setHex(intersected.currentHex);
-
-    intersected = null;
-  }
+  controls.target = earth.planet.position.clone();
 
   renderer.render(scene, camera);
 }
@@ -152,6 +144,7 @@ function createPlanet(size, texture, position, ring, moon) {
   const material = new THREE.MeshStandardMaterial({
     color: texture,
     wireframe: true,
+    side: THREE.DoubleSide,
   });
   const planet = new THREE.Mesh(geo, material);
   const planetParent = new THREE.Object3D();
@@ -177,16 +170,22 @@ function createPlanet(size, texture, position, ring, moon) {
     const moonMaterial = new THREE.MeshStandardMaterial({
       color: moon.texture,
       wireframe: true,
+      side: THREE.DoubleSide,
     });
     const newMoon = new THREE.Mesh(moonGeometry, moonMaterial);
     planet.add(newMoon);
     newMoon.position.x = moon.position;
     newMoon.rotation.x = 8 * Math.PI;
+    newMoon.receiveLight = true;
+    newMoon.receiveShadow = true;
+    newMoon.castShadow = true;
   }
 
   scene.add(planetParent);
   planet.position.x = position;
   planet.receiveLight = true;
+  planet.receiveShadow = true;
+  planet.castShadow = true;
   return { planet, planetParent };
 }
 
